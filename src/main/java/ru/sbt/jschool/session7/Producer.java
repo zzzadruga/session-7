@@ -3,7 +3,7 @@ package ru.sbt.jschool.session7;
 /**
  */
 public class Producer implements Runnable {
-    public static final int JOB_PRODUCE_TIME = 250;
+    public static final int JOB_PRODUCE_TIME = 500;
 
     private final JobsStore store;
 
@@ -30,12 +30,6 @@ public class Producer implements Runnable {
     }
 
     private void generateJob() {
-        synchronized (store) {
-            System.out.println("Generating job - " + ++i + ", queue size - " + store.cnt);
-
-            store.store[store.cnt++] = new Job(i);
-
-            store.notify();
-        }
+        //TODO: здесь нужно сгенерировать новое задание!
     }
 }

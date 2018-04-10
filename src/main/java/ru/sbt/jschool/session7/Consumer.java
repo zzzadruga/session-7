@@ -32,29 +32,18 @@ public class Consumer implements Runnable {
         }
     }
 
-    private Job getJob() throws InterruptedException {
-        Job job = null;
+    private Job getJob() {
+        //TODO: Здесь нужно получить задание из store!
 
-        synchronized (store) {
-            if (store.cnt > 0) {
-                job = store.store[store.cnt-1];
-
-                store.store[--store.cnt] = null;
-            } else
-                store.wait();
-        }
-
-        return job;
+        return null;
     }
 
     private void executeJob(Job job) throws InterruptedException {
-        if (job != null) {
-            System.out.println("Consumer Thread[" + Thread.currentThread().getId() + "] - execute a job - " + job.getI());
+        System.out.println("Consumer Thread[" + Thread.currentThread().getId() + "] - execute a job - " + job.getI());
 
-            if (!doneJobs.add(job.getI()))
-                throw new RuntimeException("Job " + job.getI() + " are executed twice!");
+        if (!doneJobs.add(job.getI()))
+            throw new RuntimeException("Job " + job.getI() + " are executed twice!");
 
-            Thread.sleep(JOB_EXECUTE_TIME);
-        }
+        Thread.sleep(JOB_EXECUTE_TIME);
     }
 }
