@@ -1,36 +1,41 @@
 package ru.sbt.jschool.session7;
 
-import java.util.List;
-
 /**
  */
 public class Producer implements Runnable {
     public static final int JOB_PRODUCE_TIME = 250;
 
-    private List<Job> jobs;
+    private final JobsStore store;
 
     private int i = 0;
 
-    public Producer(List<Job> jobs) {
-        this.jobs = jobs;
+    public Producer(JobsStore store) {
+        this.store = store;
     }
 
     @Override public void run() {
         try {
             while (true) {
-
-                if (jobs.size() >= Main.CONSUMER_CNT) {
+                if (store.cnt < JobsStore.JOB_STORE_SIZE)
+                    generateJob();
+                else
                     System.out.println("Skip generating jobs! Consumer is bad!");
-                } else {
-                    System.out.println("Generating job - " + ++i);
-                    jobs.add(new Job(i));
-                }
 
                 Thread.sleep(JOB_PRODUCE_TIME);
             }
         }
         catch (InterruptedException e) {
             System.out.println("e = " + e);
+        }
+    }
+
+    private void generateJob() {
+        synchronized (store) {
+            System.out.println("Generating job - " + ++i + ", queue size - " + store.cnt);
+
+            store.store[store.cnt++] = new Job(i);
+
+            store.notify();
         }
     }
 }

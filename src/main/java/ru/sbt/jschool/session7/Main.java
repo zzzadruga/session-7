@@ -11,21 +11,21 @@ import static java.util.concurrent.TimeUnit.MINUTES;
  * @author NIzhikov
  */
 public class Main {
-    public static final int CONSUMER_CNT = 6;
+    public static final int CONSUMER_CNT = 4;
 
     public static void main(String[] args) {
-        List<Job> jobs = new ArrayList<>();
+        JobsStore store = new JobsStore();
 
         Set<Integer> doneJobs = new HashSet<>();
 
-        Thread producer = new Thread(new Producer(jobs));
+        Thread producer = new Thread(new Producer(store));
 
         producer.start();
 
         List<Thread> consumers = new ArrayList<>();
 
         for(int i=0; i<CONSUMER_CNT; i++) {
-            Thread consumer = new Thread(new Consumer(jobs, doneJobs));
+            Thread consumer = new Thread(new Consumer(store, doneJobs));
 
             consumer.start();
 
